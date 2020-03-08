@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -78,26 +77,6 @@ WSGI_APPLICATION = 'covid19.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-if ENV == 'prod':
-    ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOST")]
-    DATABASES = {"default": dj_database_url.config(conn_max_age=600)}
-    APP_SECRET_KEY = os.environ.get("APP_SECRET_KEY")
-    SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS"), 15)
-
-elif ENV == 'dev':
-    APP_SECRET_KEY = "hello! I'm a secret key (for dev only)!"
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": 'covid19',
-            "HOST": "localhost",
-            "PORT": "5432",
-            "USER": "postgres",
-        }
-    }
-
 
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
@@ -145,3 +124,23 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+if ENV == 'prod':
+    ALLOWED_HOSTS = [os.environ.get("ALLOWED_HOST")]
+    APP_SECRET_KEY = os.environ.get("APP_SECRET_KEY")
+    SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", 15))
+    import django_heroku
+    django_heroku.settings(locals())
+elif ENV == 'dev':
+    APP_SECRET_KEY = "hello! I'm a secret key (for dev only)!"
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": 'covid19',
+            "HOST": "localhost",
+            "PORT": "5432",
+            "USER": "postgres",
+        }
+    }
