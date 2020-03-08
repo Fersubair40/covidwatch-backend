@@ -30,7 +30,6 @@ if IS_DEBUG.lower() in ('t', 'true', 1, 'y', 'yes'):
     DEBUG = True
 else:
     DEBUG = False
-    print("Debug is false!")
 
 # Application definition
 
