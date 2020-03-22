@@ -26,7 +26,8 @@ def create_app(config_name: Optional[str] = None) -> Flask:
   # register db
   db.init_app(app)
   # Create all tables if DNE
-  db.create_all()
+  with app.app_context():
+    db.create_all()
   # register migration
   migrate.init_app(app, db)
 
