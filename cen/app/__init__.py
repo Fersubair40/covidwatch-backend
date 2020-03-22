@@ -12,8 +12,8 @@ def create_app(config_name: str) -> Flask:
   app.config.from_object(app_config[config_name])
 
   # register routes
-  from app.routes import route_blueprint
-  app.register_blueprint(route_blueprint)
+  from app.routes import cens_blueprint
+  app.register_blueprint(cens_blueprint, url_prefix='/cens')
 
   # register db
   db.init_app(app)

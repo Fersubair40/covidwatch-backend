@@ -1,6 +1,8 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+API_VERSION = "1"
+
 
 class Config(object):
   '''
@@ -8,6 +10,7 @@ class Config(object):
   '''
 
   SQLALCHEMY_TRACK_MODIFICATIONS = False
+  APPLICATION_ROOT = "api/" + API_VERSION
 
 
 class DevelopmentConfig(Config):
@@ -49,4 +52,4 @@ app_config = {
     'production': ProductionConfig,
 }
 
-CEN_LENGTH = 16
+CEN_LENGTH = 32
