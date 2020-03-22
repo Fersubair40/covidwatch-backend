@@ -10,7 +10,6 @@ class Config(object):
   '''
 
   SQLALCHEMY_TRACK_MODIFICATIONS = False
-  APPLICATION_ROOT = "api/" + API_VERSION
 
 
 class DevelopmentConfig(Config):

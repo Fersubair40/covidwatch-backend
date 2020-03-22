@@ -2,10 +2,12 @@ from flask import Blueprint, request
 from app.models import CEN
 from datetime import datetime
 cens_blueprint = Blueprint('cens', __name__)
-from config import CEN_LENGTH
+from config import CEN_LENGTH, API_VERSION
+
+PREFIX = "/api/v" + API_VERSION + '/cens'
 
 
-@cens_blueprint.route('/', methods=['GET', 'POST'])
+@cens_blueprint.route(PREFIX + '/', methods=['GET', 'POST'])
 def cens():
   if request.method == 'GET':
     since: str = request.args.get('since')

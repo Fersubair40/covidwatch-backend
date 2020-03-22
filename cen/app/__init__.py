@@ -21,7 +21,7 @@ def create_app(config_name: Optional[str] = None) -> Flask:
 
   # register routes
   from app.routes import cens_blueprint
-  app.register_blueprint(cens_blueprint, url_prefix='/cens')
+  app.register_blueprint(cens_blueprint)
 
   # register db
   db.init_app(app)
