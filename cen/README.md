@@ -1,4 +1,8 @@
-# Setting up dev environment
+# CENs
+
+Repository for the backend that deals with Contact Event Numbers (CENs)
+
+## Setting up dev environment
 
 Install all python modules by running
 
