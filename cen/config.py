@@ -6,8 +6,7 @@ class Config(object):
   '''
   Parent configuration class.
   '''
-  SQLALCHEMY_DATABASE_URI = os.environ.get(
-      'DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'dev.db')
+
   SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -16,6 +15,7 @@ class DevelopmentConfig(Config):
   Configurations for Development.
   '''
   DEBUG = True
+  SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'dev.db')
 
 
 class TestingConfig(Config):
@@ -24,6 +24,7 @@ class TestingConfig(Config):
   '''
   TESTING = True
   DEBUG = True
+  SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
 
 
 class StagingConfig(Config):
@@ -42,8 +43,8 @@ class ProductionConfig(Config):
 
 
 app_config = {
-    'development': DevelopmentConfig,
-    'testing': TestingConfig,
+    'dev': DevelopmentConfig,
+    'test': TestingConfig,
     'staging': StagingConfig,
     'production': ProductionConfig,
 }
