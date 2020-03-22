@@ -1,4 +1,5 @@
 .idea
+cen/logs/*
 *.pyc
 *.mypy_cache/
 **.DS_Store**
