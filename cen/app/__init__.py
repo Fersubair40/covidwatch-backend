@@ -5,12 +5,17 @@ from flask_migrate import Migrate
 import logging
 from logging.handlers import RotatingFileHandler
 import os
+from typing import Optional
 
 db = SQLAlchemy()
 migrate = Migrate()
 
 
-def create_app(config_name: str) -> Flask:
+def create_app(config_name: Optional[str]) -> Flask:
+  if config_name is None:
+    config_name = os.getenv('APP_CONFIG')
+    if config_name is None:
+      raise RuntimeError("No config name specified")
   app = Flask(__name__)
   app.config.from_object(app_config[config_name])
 
