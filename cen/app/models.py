@@ -3,8 +3,5 @@ from config import CEN_LENGTH
 
 
 class CEN(db.Model):
-  id = db.Column(
-      db.Integer, primary_key=True
-  )  #TODO: Do we need id? Can just index by cen value since they should be unique?
+  uuid = db.Column(db.String(CEN_LENGTH), primary_key=True, unique=True)
   created = db.Column(db.DateTime, server_default=db.func.now())
-  value = db.Column(db.String(CEN_LENGTH), index=True)
