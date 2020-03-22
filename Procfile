@@ -1,1 +1,0 @@
-web: gunicorn --pythonpath cen 'app:create_app("production")'
