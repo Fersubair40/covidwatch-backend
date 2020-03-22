@@ -27,7 +27,7 @@ class TestingConfig(Config):
   '''
   TESTING = True
   DEBUG = True
-  SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
+  SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/covidwatch-backend-test'
 
 
 class StagingConfig(Config):
@@ -35,6 +35,7 @@ class StagingConfig(Config):
   Configurations for Staging.
   '''
   DEBUG = True
+  SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 
 class ProductionConfig(Config):
