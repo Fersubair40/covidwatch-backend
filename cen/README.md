@@ -35,3 +35,11 @@ To run tests, call
 ```
 python -m pytest
 ```
+
+## Running in Heroku
+
+For now from the `flask-version` branch do:
+
+`git subtree push --prefix cen heroku master`
+
+Currently necessary because Flask files are all inside that dir.
