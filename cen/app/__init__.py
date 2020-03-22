@@ -11,7 +11,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 
-def create_app(config_name: Optional[str]) -> Flask:
+def create_app(config_name: Optional[str] = None) -> Flask:
   if config_name is None:
     config_name = os.getenv('APP_CONFIG')
     if config_name is None:
