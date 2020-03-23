@@ -24,7 +24,6 @@ def populate_db() -> datetime:
 def test_get_no_since_param(test_cli: FlaskClient, test_db: SQLAlchemy):
   response = test_cli.get('/api/v1/cens/')
   assert response.status_code == 400
-  assert json.loads(response.data)['msg'] == 'Missing ?since=<datetime>'
 
 
 def test_get_since_param(test_cli: FlaskClient, test_db: SQLAlchemy):
@@ -43,28 +42,25 @@ def test_get_since_param(test_cli: FlaskClient, test_db: SQLAlchemy):
 def test_post_no_param(test_cli: FlaskClient, test_db: SQLAlchemy):
   response = test_cli.post('/api/v1/cens/')
   assert response.status_code == 400
-  assert json.loads(response.data)['msg'] == 'Missing ?uuid=<uuid>'
 
 
 def test_post_uuid_wrong_len(test_cli: FlaskClient, test_db: SQLAlchemy):
   # Too short
-  response = test_cli.post(f'/api/v1/cens/?uuid={uuid.uuid4().hex[:-1]}')
+  response = test_cli.post(f'/api/v1/cens/?cens={uuid.uuid4().hex[:-1]}')
   assert response.status_code == 400
-  assert json.loads(
-      response.data)['msg'] == f'uuid must be of length {str(CEN_LENGTH)}'
 
   # Too long
   response = test_cli.post(
       f'/api/v1/cens/?uuid={uuid.uuid4().hex + uuid.uuid4().hex}')
   assert response.status_code == 400
-  assert json.loads(
-      response.data)['msg'] == f'uuid must be of length {str(CEN_LENGTH)}'
 
 
-def test_post_uuid(test_cli: FlaskClient, test_db: SQLAlchemy):
-  new_uuid = uuid.uuid4().hex
-  res = test_cli.post(f'/api/v1/cens/?uuid={new_uuid}')
+def test_post_cens(test_cli: FlaskClient, test_db: SQLAlchemy):
+  new_uuid1 = uuid.uuid4().hex
+  new_uuid2 = uuid.uuid4().hex
+  res = test_cli.post(f'/api/v1/cens/?cens={new_uuid1},{new_uuid2}')
   assert res.status_code == 201
   cens = CEN.query.all()
-  assert len(cens) == 1
-  assert cens[0].uuid == new_uuid
+  assert len(cens) == 2
+  assert cens[0].uuid == new_uuid1
+  assert cens[1].uuid == new_uuid2
