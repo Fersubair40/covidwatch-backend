@@ -16,7 +16,8 @@ def populate_db(db: SQLAlchemy) -> datetime:
   '''
   now = datetime.now()
   for i in range(10):
-    new_cen = CEN(uuid=uuid.uuid4().hex)
+    new_cen = CEN(
+        uuid=uuid.uuid4().hex, created_at=str(now - timedelta(days=i)))
     db.session.add(new_cen)
   db.session.commit()
   return now
@@ -49,16 +50,29 @@ def test_post_uuid_wrong_len(test_cli: FlaskClient, test_db: SQLAlchemy):
   # Too short
   response = test_cli.post(
       f'/api/v1/cens/',
-      data=json.dumps({'cens': [uuid.uuid4().hex,
-                                uuid.uuid4().hex[:-1]]}),
+      data=json.dumps({
+          'cens': [{
+              'uuid': uuid.uuid4().hex,
+              'created_at': str(datetime.now())
+          }, {
+              'uuid': uuid.uuid4().hex[:-1],
+              'created_at': str(datetime.now())
+          }]
+      }),
       content_type='application/json')
   assert response.status_code == 400
 
   response = test_cli.post(
       f'/api/v1/cens/',
-      data=json.dumps(
-          {'cens': [uuid.uuid4().hex,
-                    uuid.uuid4().hex + uuid.uuid4().hex]}),
+      data=json.dumps({
+          'cens': [{
+              'uuid': uuid.uuid4().hex,
+              'created_at': str(datetime.now())
+          }, {
+              'uuid': uuid.uuid4().hex + uuid.uuid4().hex,
+              'created_at': str(datetime.now())
+          }]
+      }),
       content_type='application/json')
   assert response.status_code == 400
 
@@ -68,7 +82,15 @@ def test_post_cens(test_cli: FlaskClient, test_db: SQLAlchemy):
   new_uuid2 = uuid.uuid4().hex
   res = test_cli.post(
       f'/api/v1/cens/',
-      data=json.dumps({'cens': [new_uuid1, new_uuid2]}),
+      data=json.dumps({
+          'cens': [{
+              'uuid': new_uuid1,
+              'created_at': str(datetime.now())
+          }, {
+              'uuid': new_uuid2,
+              'created_at': str(datetime.now())
+          }]
+      }),
       content_type='application/json')
   assert res.status_code == 201
   cens = CEN.query.all()

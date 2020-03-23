@@ -7,7 +7,7 @@ from logging.handlers import RotatingFileHandler
 import os
 from typing import Optional
 
-db = SQLAlchemy()
+db: SQLAlchemy = SQLAlchemy()
 migrate = Migrate()
 
 
