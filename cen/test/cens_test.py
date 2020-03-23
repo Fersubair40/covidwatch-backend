@@ -9,7 +9,7 @@ from config import CEN_LENGTH
 URL_PATH = ''
 
 
-def populate_db() -> datetime:
+def populate_db(db: SQLAlchemy) -> datetime:
   '''
   Populate the db with random CEN and return a datetime from before
   they were created.
@@ -17,7 +17,8 @@ def populate_db() -> datetime:
   now = datetime.now()
   for i in range(10):
     new_cen = CEN(uuid=uuid.uuid4().hex)
-    new_cen.save()
+    db.session.add(new_cen)
+  db.session.commit()
   return now
 
 
@@ -27,7 +28,7 @@ def test_get_no_since_param(test_cli: FlaskClient, test_db: SQLAlchemy):
 
 
 def test_get_since_param(test_cli: FlaskClient, test_db: SQLAlchemy):
-  then: datetime = populate_db()
+  then: datetime = populate_db(test_db)
 
   # Should return all 10
   response = test_cli.get(f'/api/v1/cens/?since={str(then)}')
@@ -40,25 +41,35 @@ def test_get_since_param(test_cli: FlaskClient, test_db: SQLAlchemy):
 
 
 def test_post_no_param(test_cli: FlaskClient, test_db: SQLAlchemy):
-  response = test_cli.post('/api/v1/cens/')
+  response = test_cli.post('/api/v1/cens/', content_type='application/json')
   assert response.status_code == 400
 
 
 def test_post_uuid_wrong_len(test_cli: FlaskClient, test_db: SQLAlchemy):
   # Too short
-  response = test_cli.post(f'/api/v1/cens/?cens={uuid.uuid4().hex[:-1]}')
+  response = test_cli.post(
+      f'/api/v1/cens/',
+      data=json.dumps({'cens': [uuid.uuid4().hex,
+                                uuid.uuid4().hex[:-1]]}),
+      content_type='application/json')
   assert response.status_code == 400
 
-  # Too long
   response = test_cli.post(
-      f'/api/v1/cens/?uuid={uuid.uuid4().hex + uuid.uuid4().hex}')
+      f'/api/v1/cens/',
+      data=json.dumps(
+          {'cens': [uuid.uuid4().hex,
+                    uuid.uuid4().hex + uuid.uuid4().hex]}),
+      content_type='application/json')
   assert response.status_code == 400
 
 
 def test_post_cens(test_cli: FlaskClient, test_db: SQLAlchemy):
   new_uuid1 = uuid.uuid4().hex
   new_uuid2 = uuid.uuid4().hex
-  res = test_cli.post(f'/api/v1/cens/?cens={new_uuid1},{new_uuid2}')
+  res = test_cli.post(
+      f'/api/v1/cens/',
+      data=json.dumps({'cens': [new_uuid1, new_uuid2]}),
+      content_type='application/json')
   assert res.status_code == 201
   cens = CEN.query.all()
   assert len(cens) == 2
